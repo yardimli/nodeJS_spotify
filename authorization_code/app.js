@@ -14,6 +14,11 @@ var querystring = require('querystring');
 var cookieParser = require('cookie-parser');
 var sqlite3 = require('sqlite3').verbose();
 
+const http = require('http');
+const https = require('https');
+const fs = require('fs');
+
+
 var client_id = '0619847e14194e56a1626645d10a33d9'; // Your client id
 var client_secret = 'b4b7fe03489e497985eeac2ec7ea969b'; // Your secret
 var redirect_uri = 'http://127.0.0.1:8888/callback'; // Your redirect uri
@@ -307,5 +312,22 @@ app.get('/refresh_token', function(req, res) {
   });
 });
 
-console.log('Listening on 8888');
-app.listen(8888);
+// console.log('Listening on 8888');
+// app.listen(8888);
+
+
+
+console.log('Listening on 80 and 443');
+
+// start http server
+let server = http.createServer(app).listen(80);
+
+// start https server
+let sslOptions = {
+   key: fs.readFileSync('/etc/letsencrypt/live/guan.emoji.singles/privkey.pem'),
+   cert: fs.readFileSync('/etc/letsencrypt/live/guan.emoji.singles/fullchain.pem')
+};
+
+let serverHttps = https.createServer(sslOptions, app).listen(443)
+
+
